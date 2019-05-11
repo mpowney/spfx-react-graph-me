@@ -19,7 +19,7 @@
     "group": { "default": "Other" },
     "title": { "default": "Me Graph" },
     "description": { "default": "Example web part to request information from the MS Graph me endpoint" },
-    "officeFabricIconFontName": "User",
+    "officeFabricIconFontName": "People",
     "properties": {
       "graphEndpoint": "/people"
     }

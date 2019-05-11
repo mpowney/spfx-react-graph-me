@@ -1,9 +1,9 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
   "solution": {
-    "name": "react-graph-me-client-side-solution",
+    "name": "React Graph Me Endpoint Sample App",
     "id": "3d421ab2-e7f5-40a2-bcd4-62336f52b21d",
-    "version": "1.0.0.2",
+    "version": "1.0.0.3",
     "includeClientSideAssets": true,
     "webApiPermissionRequests": [
       {
