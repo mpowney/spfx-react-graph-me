@@ -1,0 +1,23 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "react-graph-me-client-side-solution",
+    "id": "3d421ab2-e7f5-40a2-bcd4-62336f52b21d",
+    "version": "1.0.0.2",
+    "includeClientSideAssets": true,
+    "webApiPermissionRequests": [
+      {
+        "resource": "Microsoft Graph",
+        "scope": "People.Read"
+      },
+      {
+        "resource": "Microsoft Graph",
+        "scope": "User.Read.All"
+      }
+    ],
+    "isDomainIsolated": false
+  },
+  "paths": {
+    "zippedPackage": "solution/react-graph-me.sppkg"
+  }
+}
