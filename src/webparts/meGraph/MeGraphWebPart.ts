@@ -8,12 +8,13 @@ import {
   PropertyPaneDropdown,
   IPropertyPaneDropdownOption
 } from '@microsoft/sp-property-pane';
+import { MSGraphClient } from '@microsoft/sp-http';
+import { Options as GraphClientOptions } from '@microsoft/microsoft-graph-client';
+import * as Msal from 'msal';
 
 import * as strings from 'MeGraphWebPartStrings';
 import MeGraph from './components/MeGraph';
 import { IMeGraphProps } from './components/IMeGraphProps';
-import { MSGraphClient } from '@microsoft/sp-http';
-import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 export interface IMeGraphWebPartProps {
   graphEndpoint: string;
@@ -21,30 +22,80 @@ export interface IMeGraphWebPartProps {
 
 export default class MeGraphWebPart extends BaseClientSideWebPart<IMeGraphWebPartProps> {
 
+  private _token: string;
+
+  public async onInit(): Promise<void> {
+
+    const scopes = ["People.Read.All", "User.Read.All"];
+    const msalConfig = {
+      auth: {
+          clientId: 'cc011966-b43c-4b92-b820-0d00204e8e21',
+          authority: `https://login.microsoftonline.com/b0327ae0-4c3a-4405-8847-f8c132aa5bb0`
+      },
+      cache: {
+        cacheLocation: Msal.Constants.cacheLocationLocal
+      },
+    };
+
+    const tokenRequest = {
+      scopes: scopes
+    };
+
+    const msalInstance = new Msal.UserAgentApplication(msalConfig);
+
+      if (msalInstance.getAccount()) {
+
+        try {
+          this._token = (await msalInstance.acquireTokenSilent(tokenRequest)).accessToken;
+        }
+        catch (err) {
+          console.error(err);
+        }
+
+      } else {
+
+        try {
+          this._token = (await msalInstance.acquireTokenPopup(tokenRequest)).accessToken;
+        }
+        catch (err) {
+          console.error(err);
+        }
+
+      }
+
+    }
+
   public render(): void {
 
     this.context.msGraphClientFactory
       .getClient()
       .then((client: MSGraphClient): void => {
-
-        client
-          .api(`/me${this.properties.graphEndpoint}`)
-          .get((error, response: any, rawResponse?: any) => {
-
-            const element: React.ReactElement<IMeGraphProps > = React.createElement(
-              MeGraph,
-              {
-                selectedEndpoint: this.properties.graphEndpoint,
-                graphData: response,
-                isLoading: false,
-                graphClient: client
-              }
-            );
         
-            ReactDom.render(element, this.domElement);
+          const graphClientConfig: GraphClientOptions = {
+            authProvider: (done) => {
+              done(undefined, this._token)
+            }
+          };
+
+          client
+            .api(`/me${this.properties.graphEndpoint}`, graphClientConfig)
+            .get((error, response: any, rawResponse?: any) => {
+
+              const element: React.ReactElement<IMeGraphProps > = React.createElement(
+                MeGraph,
+                {
+                  selectedEndpoint: this.properties.graphEndpoint,
+                  graphData: response,
+                  isLoading: false,
+                  graphClient: client
+                }
+              );
+          
+              ReactDom.render(element, this.domElement);
+          });
+
         });
 
-      });
 
     const placeholderElement: React.ReactElement<IMeGraphProps > = React.createElement(
       MeGraph,
