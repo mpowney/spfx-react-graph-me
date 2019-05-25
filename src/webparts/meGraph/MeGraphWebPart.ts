@@ -47,16 +47,27 @@ export default class MeGraphWebPart extends BaseClientSideWebPart<IMeGraphWebPar
 
         try {
           this._token = (await msalInstance.acquireTokenSilent(tokenRequest)).accessToken;
+          console.log(`acquireTokenSilent accessToken ${this._token}`);
         }
         catch (err) {
-          console.error(err);
+          try {
+            this._token = (await msalInstance.acquireTokenPopup(tokenRequest)).accessToken;
+            console.log(`acquireTokenPopup accessToken ${this._token}`);
+          }
+          catch (err) {
+            console.error(err);
+          }
         }
 
       } else {
 
         try {
+          const idToken = (await msalInstance.loginPopup(tokenRequest)).idToken;
+          console.log(`loginPopup idToken:`);
+          console.log(idToken);
           this._token = (await msalInstance.acquireTokenPopup(tokenRequest)).accessToken;
-        }
+          console.log(`acquireTokenPopup accessToken ${this._token}`);
+      }
         catch (err) {
           console.error(err);
         }
