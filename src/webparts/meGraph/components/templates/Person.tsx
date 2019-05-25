@@ -4,9 +4,11 @@ import { IPersonaSharedProps, IPersonaProps, Persona } from 'office-ui-fabric-re
 import { Person } from '@microsoft/microsoft-graph-types';
 import { MSGraphClient } from '@microsoft/sp-http';
 import { GraphError } from '@microsoft/microsoft-graph-client/lib/src/common';
+import { IReadonlyTheme } from '@microsoft/sp-component-base';
 
 export interface IPersonProps extends Person {
     graphClient: MSGraphClient;
+    theme: IReadonlyTheme;
 }
 
 export interface IPersonState {
@@ -52,9 +54,10 @@ export default class MeGraph extends React.Component<IPersonProps, IPersonState>
             secondaryText: this.props.jobTitle
         };
       
+        const color = this.props.theme && this.props.theme.semanticColors.bodyText;
 
         return (
-            <div className={ styles.person }>
+            <div className={ styles.person } style={{ color: color }}>
                 <div className={ styles.container }>
                     <Persona {...personaProps}
                         onRenderCoin={this._onRenderCoin} />

@@ -15,6 +15,9 @@
             }
          
         }
+        :global(.ms-Persona), :global(.ms-Persona-primaryText) {
+            color: inherit;
+        }
     }
 }
 

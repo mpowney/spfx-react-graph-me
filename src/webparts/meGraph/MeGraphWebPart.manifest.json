@@ -3,6 +3,7 @@
   "id": "cd4bca3e-cc95-455b-b3d2-5c0af0e9db0b",
   "alias": "MeGraphWebPart",
   "componentType": "WebPart",
+  "supportsThemeVariants": true,
 
   // The "*" signifies that the version should be taken from the package.json
   "version": "*",
