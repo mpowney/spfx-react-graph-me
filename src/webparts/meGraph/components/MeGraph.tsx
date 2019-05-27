@@ -12,7 +12,7 @@ export default class MeGraph extends React.Component<IMeGraphProps, {}> {
         <div className={ styles.container }>
           { this.props.graphData && this.props.selectedEndpoint === '/people' && 
               this.props.graphData.value.map((person: Person) => {
-                return <PersonTemplate {...person} graphClient={this.props.graphClient } />;
+                return <PersonTemplate {...person} graphClient={this.props.graphClient } serviceScope={this.props.serviceScope} />;
             })
           }
         </div>
