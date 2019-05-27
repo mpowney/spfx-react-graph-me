@@ -9,14 +9,17 @@ import {
   IPropertyPaneDropdownOption
 } from '@microsoft/sp-property-pane';
 
+import { PropertyFieldGraphPeople, IPropertyFieldGraphPeopleProps } from '../../propertyFields/graphPeople';
 import * as strings from 'MeGraphWebPartStrings';
 import MeGraph from './components/MeGraph';
 import { IMeGraphProps } from './components/IMeGraphProps';
 import { MSGraphClient } from '@microsoft/sp-http';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import IGraphPeopleSettings from '../../propertyFields/graphPeople/IGraphPeopleSettings';
 
 export interface IMeGraphWebPartProps {
   graphEndpoint: string;
+  peopleConfig: IGraphPeopleSettings;
 }
 
 export default class MeGraphWebPart extends BaseClientSideWebPart<IMeGraphWebPartProps> {
@@ -86,6 +89,10 @@ export default class MeGraphWebPart extends BaseClientSideWebPart<IMeGraphWebPar
                 PropertyPaneDropdown('graphEndpoint', {
                   label: strings.GraphEndpointDropdownLabel,
                   options: graphEndpointOptions
+                }),
+                PropertyFieldGraphPeople('peopleConfig', {
+                  label: 'blah',
+                  properties: this.properties
                 })
               ]
             }

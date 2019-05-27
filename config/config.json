@@ -13,6 +13,7 @@
   },
   "externals": {},
   "localizedResources": {
-    "MeGraphWebPartStrings": "lib/webparts/meGraph/loc/{locale}.js"
+    "MeGraphWebPartStrings": "lib/webparts/meGraph/loc/{locale}.js",
+    "PropertyFieldGraphPeopleStrings": "lib/propertyFields/graphPeople/loc/{locale}.js"
   }
 }
