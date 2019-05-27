@@ -14,7 +14,7 @@ const COMPONENT_ID: any = {
     SP_COMPONENT_UTILITIES: "8494e7d7-6b99-47b2-a741-59873e42f16f",
     ODSP_UTILITIES_BUNDLE: "cc2cc925-b5be-41bb-880a-f0f8030c6aff",
     SP_PAGE_CONTEXT: "1c4541f7-5c31-41aa-9fa8-fbc9dc14c0a8"
-}
+};
 
 export interface IPersonProps extends Person {
     graphClient: MSGraphClient;
@@ -56,16 +56,14 @@ export default class PersonTemplate extends React.Component<IPersonProps, IPerso
                 });
 
             const componentCardPromise = this.loadSPComponentById(COMPONENT_ID.SP_WEBPART_SHARED).then((sharedLibrary: any) => {
-                console.log('sharedLibrary:');
-                console.log(sharedLibrary);
-                const livePersonaCard: any = sharedLibrary.LivePersonaCard;
-                livePersonaCard && this.setState({
-                    personaCard: sharedLibrary.LivePersonaCard
-                });
+                if (sharedLibrary.LivePersonaCard) {
+                    this.setState({
+                        personaCard: sharedLibrary.LivePersonaCard
+                    });
+                }
             });
 
-            Promise.all([graphPromise, componentCardPromise]).then(promiseResponses => {
-            })
+            Promise.all([graphPromise, componentCardPromise]);
         
         }
     }
