@@ -1,0 +1,63 @@
+version: 2
+branches:
+  ignore:
+    - master
+defaults: &defaults
+  working_directory: ~/generator-spfx
+  docker:
+    - image: circleci/node:8.11.2
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/react-graph-me
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: Restore dependencies
+          command: npm ci
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: Bundle
+          command: gulp bundle --ship
+      - run:
+          name: Bundle
+          command: gulp package-solution --ship
+      - persist_to_workspace:
+          root: .
+          paths: ["./sharepoint/solution/*"]
+  test:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/generator-spfx
+      - run:
+          name: Test Run All
+          command: npm run test
+    #   - run:
+    #       name: Test React
+    #       command: npm run test-react
+    #   - run:
+    #       name: Test Handlebars
+    #       command: npm run test-handlebars
+      - store_artifacts:
+          path: testresult
+workflows:
+  version: 2
+  testing:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: integration
+      - test:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: dev
