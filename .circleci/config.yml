@@ -13,18 +13,18 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/react-graph-me
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
+      #- restore_cache: # npm ci does a clean of node_modules
+      #    key: dependency-cache-{{ checksum "package.json" }}
       - run:
           name: npm ci
           command: npm ci
       - run:
           name: npm i gulp
-          command: npm i gulp@3.9.1
-      - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-          paths:
-            - ./node_modules
+          command: npm i -g gulp@3.9.1
+      #- save_cache: # npm ci does a clean of node_modules
+      #    key: dependency-cache-{{ checksum "package.json" }}
+      #    paths:
+      #      - ./node_modules
       - run:
           name: gulp bundle
           command: gulp bundle --ship
