@@ -16,17 +16,20 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
-          name: Restore dependencies
+          name: npm ci
           command: npm ci
+      - run:
+          name: npm i gulp
+          command: npm i gulp@3.9.1
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - ./node_modules
       - run:
-          name: Bundle
+          name: gulp bundle
           command: gulp bundle --ship
       - run:
-          name: Bundle
+          name: gulp package-solution
           command: gulp package-solution --ship
       - persist_to_workspace:
           root: .
