@@ -3,7 +3,7 @@ branches:
   ignore:
     - master
 defaults: &defaults
-  working_directory: ~/generator-spfx
+  working_directory: ~/react-graph-me
   docker:
     - image: circleci/node:8.11.2
 jobs:
@@ -35,7 +35,7 @@ jobs:
     <<: *defaults
     steps:
       - attach_workspace:
-          at: ~/generator-spfx
+          at: ~/react-graph-me
       - run:
           name: Test Run All
           command: npm run test
