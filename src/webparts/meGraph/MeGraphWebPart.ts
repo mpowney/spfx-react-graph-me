@@ -14,12 +14,40 @@ import MeGraph from './components/MeGraph';
 import { IMeGraphProps } from './components/IMeGraphProps';
 import { MSGraphClient } from '@microsoft/sp-http';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import { ThemeProvider, ThemeChangedEventArgs, IReadonlyTheme } from "@microsoft/sp-component-base";
 
 export interface IMeGraphWebPartProps {
   graphEndpoint: string;
+  title: string;
 }
 
 export default class MeGraphWebPart extends BaseClientSideWebPart<IMeGraphWebPartProps> {
+
+  private _themeProvider: ThemeProvider | null = null;
+  private _themeVariant: any;
+  
+  protected onInit(): Promise<void> {
+    // Consume the new ThemeProvider service
+    this._themeProvider = this.context.serviceScope.consume(ThemeProvider.serviceKey);
+
+    // If it exists, get the theme variant
+    this._themeVariant = this._themeProvider.tryGetTheme();
+
+    // Register a handler to be notified if the theme variant changes
+    this._themeProvider.themeChangedEvent.add(this, this._handleThemeChangedEvent);
+
+    return super.onInit();
+  }
+
+  /**
+   * Update the current theme variant reference and re-render.
+   *
+   * @param args The new theme
+   */
+  private _handleThemeChangedEvent(args: ThemeChangedEventArgs): void {
+      this._themeVariant = args.theme;
+      this.render();
+  }
 
   public render(): void {
 
@@ -37,7 +65,11 @@ export default class MeGraphWebPart extends BaseClientSideWebPart<IMeGraphWebPar
                 selectedEndpoint: this.properties.graphEndpoint,
                 graphData: response,
                 isLoading: false,
-                graphClient: client
+                graphClient: client,
+                title: this.properties.title,
+                displayMode: this.displayMode,
+                updateTitleProperty: this.updateTitleProperty.bind(this),
+                themeVariant: this._themeVariant
               }
             );
         
@@ -52,11 +84,19 @@ export default class MeGraphWebPart extends BaseClientSideWebPart<IMeGraphWebPar
         selectedEndpoint: this.properties.graphEndpoint,
         graphData: null,
         isLoading: true,
-        graphClient: null
-      }
+        graphClient: null,
+        title: this.properties.title,
+        displayMode: this.displayMode,
+        updateTitleProperty: this.updateTitleProperty.bind(this),
+        themeVariant: this._themeVariant
+}
     );
 
     ReactDom.render(placeholderElement, this.domElement);
+  }
+
+  public updateTitleProperty = (value: string): void => {
+    this.properties.title = value;
   }
 
   protected onDispose(): void {
