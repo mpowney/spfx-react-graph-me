@@ -20,17 +20,17 @@ jobs:
           command: npm ci
       - run:
           name: npm i gulp
-          command: npm i -g gulp@3.9.1
+          command: npm i gulp@3.9.1
       #- save_cache: # npm ci does a clean of node_modules
       #    key: dependency-cache-{{ checksum "package.json" }}
       #    paths:
       #      - ./node_modules
       - run:
           name: gulp bundle
-          command: gulp bundle --ship
+          command: node_modules/.bin/gulp bundle --ship
       - run:
           name: gulp package-solution
-          command: gulp package-solution --ship
+          command: node_modules/.bin/gulp package-solution --ship
       - persist_to_workspace:
           root: .
           paths: ["./sharepoint/solution/*"]
