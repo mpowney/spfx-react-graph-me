@@ -27,26 +27,30 @@ export default class MeGraphWebPart extends BaseClientSideWebPart<IMeGraphWebPar
       .getClient()
       .then((client: MSGraphClient): void => {
 
-        client
-          .api(`/me${this.properties.graphEndpoint}`)
-          .get((error, response: any, rawResponse?: any) => {
+        window.setTimeout(() => {
 
-            const element: React.ReactElement<IMeGraphProps > = React.createElement(
-              MeGraph,
-              {
-                selectedEndpoint: this.properties.graphEndpoint,
-                graphData: response,
-                isLoading: false,
-                graphClient: client
-              }
-            );
-        
-            ReactDom.render(element, this.domElement);
-        });
+          client
+            .api(`/me${this.properties.graphEndpoint}`)
+            .get((error, response: any, rawResponse?: any) => {
+
+              const element: React.ReactElement<IMeGraphProps > = React.createElement(
+                MeGraph,
+                {
+                  selectedEndpoint: this.properties.graphEndpoint,
+                  graphData: response,
+                  isLoading: false,
+                  graphClient: client
+                }
+              );
+          
+              ReactDom.render(element, this.domElement);
+          });
+
+        }, 5000)
 
       });
 
-    const placeholderElement: React.ReactElement<IMeGraphProps > = React.createElement(
+    const placeholderElement: React.ReactElement<IMeGraphProps> = React.createElement(
       MeGraph,
       {
         selectedEndpoint: this.properties.graphEndpoint,
