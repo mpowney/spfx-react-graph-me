@@ -13,7 +13,7 @@ import * as strings from 'MeGraphWebPartStrings';
 import MeGraph from './components/MeGraph';
 import { IMeGraphProps } from './components/IMeGraphProps';
 import { MSGraphClient } from '@microsoft/sp-http';
-import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import { Person } from '@microsoft/microsoft-graph-types';
 
 export interface IMeGraphWebPartProps {
   graphEndpoint: string;
@@ -50,13 +50,29 @@ export default class MeGraphWebPart extends BaseClientSideWebPart<IMeGraphWebPar
       MeGraph,
       {
         selectedEndpoint: this.properties.graphEndpoint,
-        graphData: null,
+        graphData: MeGraphWebPart.getLoadingMockData(this.properties),
         isLoading: true,
         graphClient: null
       }
     );
 
     ReactDom.render(placeholderElement, this.domElement);
+  }
+
+  private static getLoadingMockData(props: IMeGraphWebPartProps) {
+    switch (props.graphEndpoint) {
+      case '/people':
+        
+        const mockPerson: Person = {
+          givenName: 'Josh',
+          surname: 'Smith',
+          displayName: 'Josh Smith',
+          jobTitle: 'Sales Consultant'
+        }
+
+        return {value: [mockPerson, mockPerson, mockPerson, mockPerson, mockPerson, mockPerson] };
+
+    }
   }
 
   protected onDispose(): void {
