@@ -1,21 +1,21 @@
 import * as React from 'react';
-import styles from '../styles/Person.module.scss';
+import styles from '../styles/PersonTemplate.module.scss';
 import { IPersonaSharedProps, IPersonaProps, Persona } from 'office-ui-fabric-react/lib/Persona';
 import { Person } from '@microsoft/microsoft-graph-types';
 import { MSGraphClient } from '@microsoft/sp-http';
 import { GraphError } from '@microsoft/microsoft-graph-client/lib/src/common';
 
-export interface IPersonProps extends Person {
+export interface IPersonTemplateProps extends Person {
     graphClient: MSGraphClient;
 }
 
-export interface IPersonState {
+export interface IPersonTemplateState {
     profilePictureData: any;
 }
 
-export default class MeGraph extends React.Component<IPersonProps, IPersonState> {
+export default class PersonTemplate extends React.Component<IPersonTemplateProps, IPersonTemplateState> {
 
-    public constructor(props: IPersonProps) {
+    public constructor(props: IPersonTemplateProps) {
         super(props);
 
         this.state = {
@@ -44,7 +44,7 @@ export default class MeGraph extends React.Component<IPersonProps, IPersonState>
         }
     }
 
-    public render(): React.ReactElement<IPersonProps> {
+    public render(): React.ReactElement<IPersonTemplateProps> {
 
         const personaProps: IPersonaSharedProps = {
             imageInitials: `${this.props.givenName ? this.props.givenName.substring(0, 1) : ''}${this.props.surname ? this.props.surname.substring(0, 1) : ''}`,

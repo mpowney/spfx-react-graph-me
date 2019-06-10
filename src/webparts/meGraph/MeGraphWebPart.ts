@@ -15,7 +15,7 @@ import MeGraph from './components/MeGraph';
 import { IMeGraphProps } from './components/IMeGraphProps';
 import { MSGraphClient } from '@microsoft/sp-http';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import IGraphPeopleSettings from '../../propertyFields/graphPeople/IGraphPeopleSettings';
+import IGraphPeopleSettings, { ShowUser } from '../../propertyFields/graphPeople/IGraphPeopleSettings';
 
 export interface IMeGraphWebPartProps {
   graphEndpoint: string;
@@ -24,6 +24,29 @@ export interface IMeGraphWebPartProps {
 
 export default class MeGraphWebPart extends BaseClientSideWebPart<IMeGraphWebPartProps> {
 
+  private static getApiEndpoint(props: IMeGraphWebPartProps): string {
+
+    switch (props.graphEndpoint) {
+      case '/people':
+        let api: string = props.graphEndpoint;
+        if (ShowUser[props.peopleConfig.ShowUser] === ShowUser[ShowUser.SpecifiedUser]) {
+          api = `/users/${props.peopleConfig.SpecifiedUsername}/people`;
+        }
+        else {
+          api = `/me/people`;
+        }
+        if (props.peopleConfig.FilterOnlyUsers) {
+          api += `?$filter=personType/subclass eq 'OrganizationUser'`;
+        }
+        return api;
+        break;
+      default:
+        return props.graphEndpoint;
+    }
+
+
+  }
+
   public render(): void {
 
     this.context.msGraphClientFactory
@@ -31,7 +54,7 @@ export default class MeGraphWebPart extends BaseClientSideWebPart<IMeGraphWebPar
       .then((client: MSGraphClient): void => {
 
         client
-          .api(`/me${this.properties.graphEndpoint}`)
+          .api(MeGraphWebPart.getApiEndpoint(this.properties))
           .get((error, response: any, rawResponse?: any) => {
 
             const element: React.ReactElement<IMeGraphProps > = React.createElement(
@@ -91,7 +114,7 @@ export default class MeGraphWebPart extends BaseClientSideWebPart<IMeGraphWebPar
                   options: graphEndpointOptions
                 }),
                 PropertyFieldGraphPeople('peopleConfig', {
-                  label: 'blah',
+                  label: '',
                   properties: this.properties
                 })
               ]
